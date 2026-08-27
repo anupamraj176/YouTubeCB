@@ -14,7 +14,7 @@ load_dotenv() # Load variables from .env
 # Initialize LLM once
 llm = ChatGroq(
     groq_api_key=os.environ.get("GROQ_API_KEY"),
-    model_name="llama3-8b-8192", 
+    model_name="groq/compound-mini",
     temperature=0.3
 )
 
