@@ -1,4 +1,5 @@
 import os
+import re
 from dotenv import load_dotenv
 from youtube_transcript_api import YouTubeTranscriptApi, TranscriptsDisabled
 from langchain_text_splitters import RecursiveCharacterTextSplitter
@@ -27,6 +28,11 @@ def process_video(video_id: str):
     Fetches transcript for a YouTube video, chunks it, and creates a FAISS vector store.
     """
     try:
+        # Extract ID if user provided a full URL
+        match = re.search(r'(?:v=|\/)([0-9A-Za-z_-]{11}).*', video_id)
+        if match:
+            video_id = match.group(1)
+            
         # Fetch Transcript
         api = YouTubeTranscriptApi()
         transcript_obj = api.fetch(video_id, languages=["en"])

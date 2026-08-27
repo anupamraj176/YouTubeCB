@@ -1,8 +1,18 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from app.services.llm_service import process_video, ask_question
 
 app = FastAPI(title="YouTube AI Service")
+
+# Add CORS Middleware to allow requests from the React frontend / Node backend
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"], # In production, replace with your frontend URL
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # In-Memory State to store the Vector Stores temporarily for testing
 # Key = video_id, Value = vector_store
