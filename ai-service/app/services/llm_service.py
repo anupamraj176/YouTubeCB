@@ -1,3 +1,5 @@
+import os
+from dotenv import load_dotenv
 from youtube_transcript_api import YouTubeTranscriptApi, TranscriptsDisabled
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_groq import ChatGroq
@@ -30,4 +32,19 @@ embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
 vector_store = FAISS.from_documents(chunks, embeddings)
 print("Vector Store Created Successfully")
 
+
+#Step 2: Retrieving
+retriver = vector_store.as_retriever(search_type = "similarity",search_kwargs = {'k':4})
+
+
+docs = retriver.invoke('What is this video about?')
+
+#Step 3: Setup LLM using Groq
+load_dotenv() # Load variables from .env
+
+llm = ChatGroq(
+    groq_api_key=os.environ.get("GROQ_API_KEY"),
+    model_name="llama3-8b-8192", # You can also use mixtral-8x7b-32768
+    temperature=0.3
+)
 
