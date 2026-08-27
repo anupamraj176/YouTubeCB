@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv
 from youtube_transcript_api import YouTubeTranscriptApi, TranscriptsDisabled
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_groq import ChatGroq
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
@@ -28,7 +28,10 @@ def process_video(video_id: str):
     """
     try:
         # Fetch Transcript
-        transcript_list = YouTubeTranscriptApi.get_transcript(video_id, languages=["en"])
+        api = YouTubeTranscriptApi()
+        transcript_obj = api.fetch(video_id, languages=["en"])
+        transcript_list = transcript_obj.to_raw_data()
+        
         transcript = " ".join(chunk["text"] for chunk in transcript_list)
         
         # Text Splitting
