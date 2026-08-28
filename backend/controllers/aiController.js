@@ -30,15 +30,17 @@ const askQuestion = async (req, res, next) => {
         const { video_id, question } = req.body;
         if (!video_id || !question) return next(new AppError('Provide video_id and question', 400));
 
-        // 1. Find or create a Chat History document in MongoDB
-        let chat = await VideoChat.findOne({ user: req.user.id, videoId: video_id });
-        if (!chat) {
-            chat = await VideoChat.create({ user: req.user.id, videoId: video_id, messages: [] });
+        // 1. If logged in, find or create Chat History document
+        let chat;
+        if (req.user) {
+            chat = await VideoChat.findOne({ user: req.user.id, videoId: video_id });
+            if (!chat) {
+                chat = await VideoChat.create({ user: req.user.id, videoId: video_id, messages: [] });
+            }
+            // 2. Save user's question to MongoDB
+            chat.messages.push({ role: 'user', content: question });
+            await chat.save();
         }
-
-        // 2. Save the user's question to MongoDB
-        chat.messages.push({ role: 'user', content: question });
-        await chat.save();
 
         // 3. Ask Python the question
         const response = await axios.post(`${PYTHON_AI_URL}/api/chat`, {
@@ -46,10 +48,12 @@ const askQuestion = async (req, res, next) => {
             question
         });
 
-        // 4. Save the AI's answer to MongoDB
+        // 4. If logged in, save the AI's answer to MongoDB
         const aiAnswer = response.data.answer;
-        chat.messages.push({ role: 'ai', content: aiAnswer });
-        await chat.save();
+        if (req.user && chat) {
+            chat.messages.push({ role: 'ai', content: aiAnswer });
+            await chat.save();
+        }
 
         // 5. Send answer to the frontend
         res.status(200).json({

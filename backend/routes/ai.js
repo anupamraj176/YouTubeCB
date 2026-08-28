@@ -1,12 +1,13 @@
 const router = require('express').Router();
 const protect = require('../middlewares/protect');
+const optionalProtect = require('../middlewares/optionalProtect');
 const { processVideo, askQuestion, getChatHistory } = require('../controllers/aiController');
 
-// All AI routes require the user to be logged in
-router.use(protect);
+// Allow guests for processing and chatting
+router.post('/process-video', optionalProtect, processVideo);
+router.post('/chat', optionalProtect, askQuestion);
 
-router.post('/process-video', processVideo);
-router.post('/chat', askQuestion);
-router.get('/history', getChatHistory);
+// Strictly require login to view history
+router.get('/history', protect, getChatHistory);
 
 module.exports = router;
