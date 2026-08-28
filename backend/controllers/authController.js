@@ -20,7 +20,7 @@ const register = async(req,res,next) => {
 
         res.status(200).json({
             success : true, token,
-            user : {id : user._id,name : user.name,email :user.email,role:user.role}
+            user : {id : user._id, name : user.name, email :user.email}
         });
         
     }
@@ -61,7 +61,7 @@ const login = async(req, res, next) => {
 
         res.json({
             success : true,token,
-            user : {id : user._id,name : user.name,email :user.email,role:user.role}            
+            user : {id : user._id, name : user.name, email :user.email}            
         })
     }
     catch(error){

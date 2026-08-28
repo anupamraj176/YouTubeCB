@@ -20,11 +20,6 @@ const userSchema = new mongoose.Schema({
         minLength : 8,
         select : false
     },
-    role : {
-        type : String,
-        enum : ['user','admin'],
-        default : 'user'
-    },
     passwordChangedAt : Date,
     failedLoginAttempts : {
         type : Number,
@@ -50,8 +45,7 @@ userSchema.methods.comparePassword = async function (candidate) {
 
 userSchema.methods.generateToken = function(){
     return jwt.sign({
-        id : this._id,
-        role : this.role
+        id : this._id
     },
     process.env.JWT_SECRET,
     {
