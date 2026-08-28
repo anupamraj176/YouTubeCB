@@ -36,12 +36,11 @@ const userSchema = new mongoose.Schema({
 });
 
 //Auto-hash Password before save
-userSchema.pre('save',async function(next){
-    if(!this.isModified('password')) return next();
+userSchema.pre('save', async function() {
+    if(!this.isModified('password')) return;
 
-    this.password =  await bcrypt.hash(this.password,12);
+    this.password = await bcrypt.hash(this.password, 12);
     if(!this.isNew) this.passwordChangedAt = new Date(Date.now() - 1000);
-    next();
 });
 
 //helper methods
