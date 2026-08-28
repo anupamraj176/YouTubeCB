@@ -6,6 +6,6 @@
 
 @layer base {
   body {
-    @apply bg-slate-50 text-slate-900 font-sans antialiased;
+    @apply bg-zinc-50 text-zinc-900 font-sans antialiased transition-colors duration-300 dark:bg-[#121212] dark:text-zinc-100;
   }
 }

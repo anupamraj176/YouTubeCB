@@ -36,7 +36,6 @@ const Auth = () => {
       if (response.data.success) {
         localStorage.setItem('token', response.data.token);
         localStorage.setItem('user', JSON.stringify(response.data.user));
-        // Force header update and redirect
         window.location.href = '/'; 
       }
     } catch (err) {
@@ -47,18 +46,18 @@ const Auth = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-12 bg-white p-8 rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100">
+    <div className="max-w-md mx-auto mt-12 bg-white dark:bg-[#18181b] p-8 rounded-[2rem] shadow-2xl shadow-zinc-200/40 dark:shadow-black/40 border border-zinc-100 dark:border-zinc-800/60 transition-colors duration-300">
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-slate-800 mb-2">
+        <h1 className="text-3xl font-bold text-zinc-900 dark:text-zinc-100 mb-2 transition-colors">
           {isLogin ? 'Welcome Back' : 'Create Account'}
         </h1>
-        <p className="text-slate-500 font-medium">
+        <p className="text-zinc-500 dark:text-zinc-400 font-medium transition-colors">
           {isLogin ? 'Log in to view your saved chats.' : 'Sign up to permanently save your chat history.'}
         </p>
       </div>
 
       {error && (
-        <div className="bg-red-50 text-red-600 p-4 rounded-2xl mb-6 text-sm font-medium border border-red-100">
+        <div className="bg-red-50 dark:bg-red-900/10 text-red-600 dark:text-red-400 p-4 rounded-2xl mb-6 text-sm font-medium border border-red-100 dark:border-red-900/20 transition-colors">
           {error}
         </div>
       )}
@@ -66,34 +65,34 @@ const Auth = () => {
       <form onSubmit={handleSubmit} className="space-y-5">
         {!isLogin && (
           <div>
-            <label className="block text-sm font-bold text-slate-700 mb-2">Name</label>
+            <label className="block text-sm font-bold text-zinc-700 dark:text-zinc-300 mb-2 transition-colors">Name</label>
             <input 
               type="text" 
               name="name"
               required={!isLogin}
               value={formData.name}
               onChange={handleChange}
-              className="w-full bg-slate-50 border border-slate-200 text-slate-800 px-4 py-3 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
-              placeholder="John Doe"
+              className="w-full bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100 px-4 py-3.5 rounded-2xl focus:outline-none focus:ring-2 focus:ring-zinc-900 dark:focus:ring-zinc-100 focus:border-transparent transition-all placeholder:text-zinc-400 dark:placeholder:text-zinc-600"
+              placeholder="Enter your name"
             />
           </div>
         )}
         
         <div>
-          <label className="block text-sm font-bold text-slate-700 mb-2">Email</label>
+          <label className="block text-sm font-bold text-zinc-700 dark:text-zinc-300 mb-2 transition-colors">Email</label>
           <input 
             type="email" 
             name="email"
             required
             value={formData.email}
             onChange={handleChange}
-            className="w-full bg-slate-50 border border-slate-200 text-slate-800 px-4 py-3 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
-            placeholder="you@example.com"
+            className="w-full bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100 px-4 py-3.5 rounded-2xl focus:outline-none focus:ring-2 focus:ring-zinc-900 dark:focus:ring-zinc-100 focus:border-transparent transition-all placeholder:text-zinc-400 dark:placeholder:text-zinc-600"
+            placeholder="Enter your email"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-bold text-slate-700 mb-2">Password</label>
+          <label className="block text-sm font-bold text-zinc-700 dark:text-zinc-300 mb-2 transition-colors">Password</label>
           <input 
             type="password" 
             name="password"
@@ -101,15 +100,15 @@ const Auth = () => {
             minLength={8}
             value={formData.password}
             onChange={handleChange}
-            className="w-full bg-slate-50 border border-slate-200 text-slate-800 px-4 py-3 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
-            placeholder="••••••••"
+            className="w-full bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100 px-4 py-3.5 rounded-2xl focus:outline-none focus:ring-2 focus:ring-zinc-900 dark:focus:ring-zinc-100 focus:border-transparent transition-all placeholder:text-zinc-400 dark:placeholder:text-zinc-600"
+            placeholder="Enter your password"
           />
         </div>
 
         <button 
           type="submit" 
           disabled={loading}
-          className="w-full bg-primary hover:bg-indigo-600 text-white font-bold py-3.5 px-4 rounded-2xl transition-all flex items-center justify-center gap-2 shadow-md shadow-primary/30 mt-4 disabled:opacity-70"
+          className="w-full bg-zinc-900 dark:bg-zinc-100 hover:bg-zinc-800 dark:hover:bg-white text-white dark:text-zinc-900 font-bold py-3.5 px-4 rounded-2xl transition-all flex items-center justify-center gap-2 mt-6 disabled:opacity-70"
         >
           {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : (isLogin ? <LogIn className="w-5 h-5" /> : <UserPlus className="w-5 h-5" />)}
           {isLogin ? 'Log In' : 'Sign Up'}
@@ -117,11 +116,11 @@ const Auth = () => {
       </form>
 
       <div className="mt-8 text-center">
-        <p className="text-slate-500 font-medium text-sm">
+        <p className="text-zinc-500 dark:text-zinc-400 font-medium text-sm transition-colors">
           {isLogin ? "Don't have an account? " : "Already have an account? "}
           <button 
             onClick={() => setIsLogin(!isLogin)}
-            className="text-primary hover:text-indigo-700 font-bold hover:underline transition-all"
+            className="text-zinc-900 dark:text-zinc-100 font-bold hover:underline transition-all"
           >
             {isLogin ? 'Sign up' : 'Log in'}
           </button>
