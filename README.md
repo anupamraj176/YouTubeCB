@@ -1,89 +1,98 @@
-# YouTube AI Application (Full-Stack)
+<div align="center">
+  
+# 🎥 YouTube AI Chat
+**Chat with any YouTube video instantly.**
 
-This is the main repository for the YouTube AI Chat application. Currently, this README documents the **Python AI Microservice**. Later, it will be updated to include the React Frontend and Node.js Backend.
+[![React](https://img.shields.io/badge/React-19-blue.svg)](https://reactjs.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-009688.svg)](https://fastapi.tiangolo.com/)
+[![Node.js](https://img.shields.io/badge/Node.js-Express-339933.svg)](https://nodejs.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-v3-38B2AC.svg)](https://tailwindcss.com/)
+
+A full-stack, microservice architecture application that allows users to paste a YouTube URL and instantly chat with an AI about the video's content, extracting summaries, facts, and insights without watching the whole thing.
+
+</div>
 
 ---
 
-## 1. AI Microservice (Python)
+## ✨ Features
 
-This service is the backend engine built using **FastAPI** and uses **LangChain** alongside **Groq** to enable high-speed LLM conversations over YouTube transcripts.
+- **🧠 Instant AI Summarization**: Uses RAG (Retrieval-Augmented Generation) with Groq and FAISS to instantly index video transcripts and answer questions.
+- **🎨 Premium Monochrome UI**: A stunning, ultra-minimal "Zinc" aesthetic with seamless Light and Dark mode transitions.
+- **🛡️ Guest & Authenticated Modes**: 
+  - **Guest Mode**: Jump right in and ask questions instantly without an account.
+  - **Logged In**: Secure JWT authentication that saves your chat history permanently to MongoDB.
+- **🏗️ Modern Microservice Architecture**: Separation of concerns between a React frontend, Node.js security gateway, and a Python AI processing engine.
 
-### Features
-- **Automatic Transcript Extraction**: Fetches the English transcript from a provided YouTube Video ID or URL.
-- **RAG Architecture**: Uses Retrieval-Augmented Generation (RAG) by splitting the transcript into chunks and embedding them into a local FAISS vector store using HuggingFace embeddings.
-- **High-Speed AI**: Powered by Groq's lightning-fast inference API (`groq/compound-mini`) to answer user questions based exclusively on the video's content.
+---
 
-### Tech Stack
-- **Framework**: [FastAPI](https://fastapi.tiangolo.com/)
-- **LLM Orchestration**: [LangChain](https://python.langchain.com/)
-- **LLM Provider**: [Groq](https://groq.com/)
-- **Embeddings**: HuggingFace (`all-MiniLM-L6-v2`)
-- **Vector Database**: FAISS (In-Memory)
-- **Transcript Fetcher**: [youtube-transcript-api](https://github.com/jdepoix/youtube-transcript-api)
+## 🏗️ Architecture
+
+This project is broken down into three independent microservices:
+
+1. **`frontend/` (React + Vite + Tailwind)**
+   - The user interface. Features a beautiful chat UI and authentication screens.
+2. **`backend/` (Node.js + Express + MongoDB)**
+   - The API Gateway. Handles user authentication (JWT), stores chat histories in MongoDB, and acts as a secure proxy to the Python AI service.
+3. **`ai-service/` (Python + FastAPI)**
+   - The AI brain. Downloads YouTube transcripts, chunks them, generates embeddings, stores them in a FAISS vector database, and uses Groq's LLMs to generate answers.
+
+---
+
+## 🚀 Getting Started
 
 ### Prerequisites
-1. Python 3.9+ installed on your machine.
-2. A free API key from [Groq Console](https://console.groq.com/keys).
+- Node.js (v18+)
+- Python (3.9+)
+- MongoDB running locally on port `27017`
+- A [Groq API Key](https://console.groq.com/) for the AI models.
 
-### Installation
-1. Navigate to the `ai-service` directory:
-   ```bash
-   cd ai-service
-   ```
-2. Ensure you have installed the required dependencies from the `requirements.txt` file:
-   ```bash
-   pip install -r requirements.txt
-   ```
-3. Create a `.env` file in the root of the `ai-service` folder and add your Groq API key:
-   ```env
-   GROQ_API_KEY=your_actual_groq_api_key_here
-   ```
-
-### Running the Server
-Start the development server using Uvicorn:
-
+### 1. Setup the AI Service (Python)
+Open a terminal in the `ai-service` directory:
 ```bash
-python -m uvicorn app.main:app --reload
+cd ai-service
+python -m venv venv
+# Activate the virtual environment (Windows: venv\Scripts\activate | Mac/Linux: source venv/bin/activate)
+pip install -r requirements.txt
+```
+Create a `.env` file in `ai-service`:
+```env
+GROQ_API_KEY=your_groq_api_key_here
+```
+Run the server:
+```bash
+python -m uvicorn app.main:app --reload --port 8000
 ```
 
-The API will now be running on `http://127.0.0.1:8000`. 
-You can view the interactive API documentation (Swagger UI) by navigating to `http://127.0.0.1:8000/docs` in your browser.
-
-### API Endpoints
-
-#### 1. Process Video
-**`POST /api/process-video`**
-Processes a video and stores its transcript in the FAISS vector database. You must call this before chatting.
-
-**Request Body:**
-```json
-{
-  "video_id": "1-SvuFIQjK8" 
-}
+### 2. Setup the Backend Gateway (Node.js)
+Open a new terminal in the `backend` directory:
+```bash
+cd backend
+npm install
 ```
-*(Note: You can pass either the 11-character video ID or the full YouTube URL)*
-
-#### 2. Chat
-**`POST /api/chat`**
-Ask a question about a video that has already been processed.
-
-**Request Body:**
-```json
-{
-  "video_id": "1-SvuFIQjK8",
-  "question": "What is the main topic of this video?"
-}
+Create a `.env` file in `backend`:
+```env
+PORT=5000
+MONGODB_URL=mongodb://127.0.0.1:27017/youtube_ai
+JWT_SECRET=your_super_secret_jwt_key
+JWT_EXPIRES=30d
+```
+Run the server:
+```bash
+npm run dev
 ```
 
-### Note on Memory
-Currently, the FAISS vector stores are saved in an **in-memory dictionary**. This means that if you restart the FastAPI server, the memory is wiped and you must call `/api/process-video` again before attempting to chat.
+### 3. Setup the Frontend (React)
+Open a third terminal in the `frontend` directory:
+```bash
+cd frontend
+npm install
+npm run dev
+```
+Navigate to `http://localhost:5173` in your browser!
 
 ---
 
-## 2. Frontend (React)
-*(To be added)*
-
----
-
-## 3. Backend (Node.js)
-*(To be added)*
+## 🔮 Future Roadmap
+- **Chrome Extension Integration**: Port the React UI into a Chrome Extension Side Panel to interact with videos directly on `youtube.com`.
+- **Chat History Dashboard**: A dedicated page for logged-in users to review all their past video summaries.
+- **Multi-language Support**: Process transcripts and chat in different languages.
